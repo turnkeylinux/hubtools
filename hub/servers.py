@@ -38,11 +38,11 @@ class Servers(object):
     def __init__(self, hubobj):
         self.hubobj = hubobj
 
-    def get(self, instanceid):
-        r = self.hubobj.api('GET', 'amazon/instance/%s/' % instanceid)
-        return Server(self.hubobj, r)
-
-    def list(self):
-        r = self.hubobj.api('GET', 'amazon/instances/')
-        return map(lambda server: Server(self.hubobj, server), r)
+    def get(self, instanceid=None):
+        if instanceid:
+            r = self.hubobj.api('GET', 'amazon/instance/%s/' % instanceid)
+            return [Server(self.hubobj, r)]
+        else:
+            r = self.hubobj.api('GET', 'amazon/instances/')
+            return map(lambda server: Server(self.hubobj, server), r)
 
