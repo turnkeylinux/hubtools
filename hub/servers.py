@@ -21,7 +21,7 @@ class Server(AttrDict):
 
     def update(self):
         r = self.hubobj.api('GET', 'amazon/instance/%s/' % self.instanceid)
-        self._parse_response(r)
+        self._parse_response(r[0])
 
     def reboot(self):
         r = self.hubobj.api('PUT', 'amazon/instance/%s/reboot/' % self.instanceid)
@@ -41,8 +41,8 @@ class Servers(object):
     def get(self, instanceid=None):
         if instanceid:
             r = self.hubobj.api('GET', 'amazon/instance/%s/' % instanceid)
-            return [Server(self.hubobj, r)]
         else:
             r = self.hubobj.api('GET', 'amazon/instances/')
-            return map(lambda server: Server(self.hubobj, server), r)
+
+        return map(lambda server: Server(self.hubobj, server), r)
 
