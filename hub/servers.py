@@ -46,3 +46,26 @@ class Servers(object):
 
         return map(lambda server: Server(self.hubobj, server), r)
 
+    def launch(self, name, region="us-east-1", type="m1.small", **kwargs):
+        """Launch a new cloud server
+
+        required:
+
+            name        - appliance name (e.g., core)
+            region      - region for instance launch (e.g., us-east-1)
+            type        - instance size (e.g., m1.small)
+
+        optional (depending on appliance):
+
+            root_pass   - root password to set (random if not specified)
+            db_pass     - database password
+            app_pass    - admin password for application
+            app_email   - admin email for application
+            app_domain  - domain for application
+        """
+        attrs = {'region': region, 'type': type}
+        attrs.update(kwargs)
+        r = self.hubobj.api('POST', 'amazon/launch/%s/' % name, attrs)
+
+        return Server(self.hubobj, r)
+
