@@ -1,4 +1,5 @@
 from utils import API
+from appliances import Appliances
 from servers import Servers
 
 class Hub(object):
@@ -8,6 +9,7 @@ class Hub(object):
 
     def __init__(self, apikey=None):
         self.apikey = apikey
+        self.appliances = Appliances(self)
         self.servers = Servers(self)
 
     def api(self, method, uri, attrs={}):
