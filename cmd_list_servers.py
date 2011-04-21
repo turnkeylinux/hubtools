@@ -50,6 +50,7 @@ def main():
     servers = hub.servers.get(refresh_cache=refresh)
     if servers:
         print fmt_server_header()
+        servers = sorted(servers, key=lambda server: server.status)
         for server in servers:
             print fmt_server(server)
 
