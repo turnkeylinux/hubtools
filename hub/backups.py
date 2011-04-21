@@ -1,3 +1,4 @@
+import keypacket
 from utils import AttrDict
 
 from datetime import datetime
@@ -11,6 +12,14 @@ class BackupRecord(AttrDict):
         self._parse_response(response)
 
     @staticmethod
+    def _key_has_passphrase(key):
+        try:
+            keypacket.parse(key, "")
+            return False
+        except keypacket.Error:
+            return True
+
+    @staticmethod
     def _parse_datetime(s):
         if not s:
             return None
@@ -19,11 +28,11 @@ class BackupRecord(AttrDict):
 
     def _parse_response(self, response):
         self.raw = response
-        self.key = response['key']
         self.address = response['address']
         self.backup_id = response['backup_id']
         self.server_id = response['server_id']
         self.turnkey_version = response['turnkey_version']
+        self.skpp = self._key_has_passphrase(response['key'])
 
         self.created = self._parse_datetime(response['date_created'])
         self.updated = self._parse_datetime(response['date_updated'])
