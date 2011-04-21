@@ -19,7 +19,7 @@ Options:
     --app-domain    Domain for application
 
 Environment variables:
-    HUB_APIKEY      Displayed in your Hub account's user profile.
+    HUB_APIKEY      Displayed in your Hub account's user profile
 """
 import re
 import os

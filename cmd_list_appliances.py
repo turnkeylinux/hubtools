@@ -3,7 +3,7 @@
 List appliances
 
 Environment variables:
-    HUB_APIKEY      Displayed in your Hub account's user profile.
+    HUB_APIKEY      Displayed in your Hub account's user profile
 """
 import os
 import sys

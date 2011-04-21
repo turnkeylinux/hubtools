@@ -3,10 +3,10 @@
 List servers
 
 Options:
-    -r --refresh    Force refresh of Hubs Amazon EC2 cache.
+    -r --refresh    Force refresh of Hubs Amazon EC2 cache
 
 Environment variables:
-    HUB_APIKEY      Displayed in your Hub account's user profile.
+    HUB_APIKEY      Displayed in your Hub account's user profile
 """
 import os
 import sys
