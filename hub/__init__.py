@@ -1,6 +1,7 @@
 from utils import API
 from appliances import Appliances
 from servers import Servers
+from backups import Backups
 
 class Hub(object):
     """Top-level object to access the TurnKey Hub API"""
@@ -11,6 +12,7 @@ class Hub(object):
         self.apikey = apikey
         self.appliances = Appliances(self)
         self.servers = Servers(self)
+        self.backups = Backups(self)
 
     def api(self, method, uri, attrs={}):
         headers = self.API_HEADERS.copy()
