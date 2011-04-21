@@ -62,6 +62,9 @@ class Servers(object):
             app_pass    - admin password for application
             app_email   - admin email for application
             app_domain  - domain for application
+
+            backup_id   - automatically restore backup to new cloud server
+                          note: backup key cannot be passphrase protected
         """
         attrs = {'region': region, 'type': type, 'label': label}
         attrs.update(kwargs)
