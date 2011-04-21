@@ -36,3 +36,13 @@ def fmt_server(server):
          server.ipaddress if server.ipaddress else "-",
          server.region,
          server.label)
+
+def fmt_appliance_header():
+    return "# Name             Ver.  Preseeds"
+
+def fmt_appliance(appliance):
+    return "%-17s  %s  %s" % \
+        (appliance.name,
+         appliance.version.split('-')[0],
+         "root_pass %s" % " ".join(appliance.preseeds))
+
