@@ -1,0 +1,58 @@
+#!/usr/bin/python
+"""
+List servers
+
+Options:
+    -r --refresh    Force refresh of Hubs Amazon EC2 cache.
+
+Environment variables:
+    HUB_APIKEY      Displayed in your Hub account's user profile.
+"""
+import os
+import sys
+import getopt
+
+from hub import Hub
+from hub.formatter import fmt_server_header, fmt_server
+
+def fatal(e):
+    print >> sys.stderr, "error: " + str(e)
+    sys.exit(1)
+
+def usage(e=None):
+    if e:
+        print >> sys.stderr, "error: " + str(e)
+
+    print >> sys.stderr, "Syntax: %s" % (sys.argv[0])
+    print >> sys.stderr, __doc__
+
+    sys.exit(1)
+
+def main():
+    try:
+        opts, args = getopt.gnu_getopt(sys.argv[1:], "hr", ["help", "refresh"])
+    except getopt.GetoptError, e:
+        usage(e)
+
+    refresh = False
+    for opt, val in opts:
+        if opt in ('-h', '--help'):
+            usage()
+        if opt in ('-r', '--refresh'):
+            refresh = True
+
+    apikey = os.getenv('HUB_APIKEY', None)
+    if not apikey:
+        fatal("HUB_APIKEY not specified in environment")
+
+    hub = Hub(apikey)
+
+    servers = hub.servers.get(refresh_cache=refresh)
+    if servers:
+        print fmt_server_header()
+        for server in servers:
+            print fmt_server(server)
+
+if __name__ == "__main__":
+    main()
+

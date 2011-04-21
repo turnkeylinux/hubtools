@@ -9,6 +9,11 @@ def fmt_size(bytes):
     else:
         return "%-.2f" % (bytes / (1024 * 1024.0))
 
+def fmt_status(status, boot_status):
+    if status == "running" and not boot_status == "booted":
+        return boot_status
+    return status
+
 def fmt_backup_header():
     return "# ID  SKPP  Created     Updated     Size (MB)  Label"
 
@@ -20,3 +25,14 @@ def fmt_backup(backup):
          backup.updated.strftime("%Y-%m-%d") if backup.updated else "-",
          fmt_size(backup.size),
          backup.label)
+
+def fmt_server_header():
+    return "# Status    ID         IP Address      Region          Label"
+
+def fmt_server(server):
+    return "%-10s  %-9s  %-14s  %-14s  %s" % \
+        (fmt_status(server.status, server.boot_status),
+         "i-1234%s" % server.instanceid,
+         server.ipaddress if server.ipaddress else "-",
+         server.region,
+         server.label)
