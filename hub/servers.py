@@ -20,7 +20,8 @@ class Server(AttrDict):
         self.label = response['server']['description']
 
     def update(self):
-        r = self.hubobj.api('GET', 'amazon/instance/%s/' % self.instanceid)
+        attrs = {'refresh_cache': True}
+        r = self.hubobj.api('GET', 'amazon/instance/%s/' % self.instanceid, attrs)
         self._parse_response(r[0])
 
     def reboot(self):
@@ -38,11 +39,12 @@ class Servers(object):
     def __init__(self, hubobj):
         self.hubobj = hubobj
 
-    def get(self, instanceid=None):
+    def get(self, instanceid=None, refresh_cache=False):
+        attrs = {'refresh_cache': refresh_cache}
         if instanceid:
-            r = self.hubobj.api('GET', 'amazon/instance/%s/' % instanceid)
+            r = self.hubobj.api('GET', 'amazon/instance/%s/' % instanceid, attrs)
         else:
-            r = self.hubobj.api('GET', 'amazon/instances/')
+            r = self.hubobj.api('GET', 'amazon/instances/', attrs)
 
         return map(lambda server: Server(self.hubobj, server), r)
 
