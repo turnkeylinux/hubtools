@@ -39,10 +39,10 @@ def fmt_backup(backup):
 
 # server formatters
 def fmt_server_header():
-    return "# Status      ID         IP Address      Region          Label"
+    return "# Status          ID          IP Address      Region          Label"
 
 def fmt_server(server):
-    return "  %-10s  %-9s  %-14s  %-14s  %s" % \
+    return "  %-14s  %-9s  %-14s  %-14s  %s" % \
         (_fmt_status(server.status, server.boot_status),
          server.instanceid,
          server.ipaddress if server.ipaddress else "-",
