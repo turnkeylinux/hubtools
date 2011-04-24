@@ -12,15 +12,29 @@
 """
 List appliances
 
+By default uses a built-in format, unless a user-specified format is specified.
+Format variables:
+
+    %name               Appliance code name
+    %version            Appliance version code
+    %description        Appliance descriptive label
+    %preseeds           Appliance supported/required preseeding arguments
+
+Examples:
+
+    hub-list-appliances
+    hub-list-appliances "name=%name preseeds=%preseeds"
+
 Environment variables:
-    HUB_APIKEY      Displayed in your Hub account's user profile
+
+    HUB_APIKEY          Displayed in your Hub account's user profile
 """
 import os
 import sys
 import getopt
 
 from hub import Hub
-from hub.formatter import fmt_appliance_header, fmt_appliance
+from hub.formatter import Formatter, fmt_appliance_header, fmt_appliance
 
 def fatal(e):
     print >> sys.stderr, "error: " + str(e)
@@ -50,14 +64,26 @@ def main():
     if not apikey:
         fatal("HUB_APIKEY not specified in environment")
 
-    hub = Hub(apikey)
+    if args:
+        if len(args) != 1:
+            usage("incorrect number of arguments")
 
+        format = args[0]
+    else:
+        format = None
+
+    hub = Hub(apikey)
     appliances = hub.appliances.get()
     appliances = sorted(appliances, key=lambda appliance: appliance.name)
 
-    print fmt_appliance_header()
-    for appliance in appliances:
-        print fmt_appliance(appliance)
+    if format:
+        format = Formatter(format)
+        for appliance in appliances:
+            print format(appliance)
+    else:
+        print fmt_appliance_header()
+        for appliance in appliances:
+            print fmt_appliance(appliance)
 
 if __name__ == "__main__":
     main()

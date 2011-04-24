@@ -8,6 +8,24 @@
 # Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 # 
+import string
+
+# custom formatting
+class Formatter:
+    def __init__(self, format):
+        tpl = format.replace('$', '$$')
+        tpl = tpl.replace('\\n', '\n')
+        tpl = tpl.replace('\\t', '\t')
+        tpl = tpl.replace('%%', '__PERCENT__')
+        tpl = tpl.replace('%', '$')
+        tpl = tpl.replace('__PERCENT__', '%')
+
+        self.tpl = string.Template(tpl)
+
+    def __call__(self, obj):
+        return self.tpl.substitute(**obj)
+
+# helper formatting
 def _fmt_bool(bool):
     return "Yes" if bool else "No"
 

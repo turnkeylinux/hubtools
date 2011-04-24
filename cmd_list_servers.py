@@ -13,17 +13,36 @@
 List servers
 
 Options:
+
     -r --refresh    Force refresh of Hubs Amazon EC2 cache
 
+By default uses a built-in format, unless a user-specified format is specified.
+Format variables:
+
+    %instanceid         Instance ID
+    %type               Instance size
+    %region             Instance region
+    %label              Descriptive label
+    %name               Appliance code name
+    %ipaddress          Associated IP address
+    %status             Amazon EC2 reported status
+    %boot_status        Hub status (sec-updates, tklbam-restore, etc.)
+
+Examples:
+
+    hub-list-servers
+    hub-list-servers "instanceid=%instanceid status=%status ipaddress=%ipaddress"
+
 Environment variables:
-    HUB_APIKEY      Displayed in your Hub account's user profile
+
+    HUB_APIKEY          Displayed in your Hub account's user profile
 """
 import os
 import sys
 import getopt
 
 from hub import Hub
-from hub.formatter import fmt_server_header, fmt_server
+from hub.formatter import Formatter, fmt_server_header, fmt_server
 
 def fatal(e):
     print >> sys.stderr, "error: " + str(e)
@@ -51,18 +70,30 @@ def main():
         if opt in ('-r', '--refresh'):
             refresh = True
 
+    if args:
+        if len(args) != 1:
+            usage("incorrect number of arguments")
+
+        format = args[0]
+    else:
+        format = None
+
     apikey = os.getenv('HUB_APIKEY', None)
     if not apikey:
         fatal("HUB_APIKEY not specified in environment")
 
     hub = Hub(apikey)
-
     servers = hub.servers.get(refresh_cache=refresh)
     if servers:
-        print fmt_server_header()
         servers = sorted(servers, key=lambda server: server.status)
-        for server in servers:
-            print fmt_server(server)
+        if format:
+            format = Formatter(format)
+            for server in servers:
+                print format(server)
+        else:
+            print fmt_server_header()
+            for server in servers:
+                print fmt_server(server)
 
 if __name__ == "__main__":
     main()

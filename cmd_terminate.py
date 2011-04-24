@@ -13,9 +13,11 @@
 Terminate a cloud server
 
 Arguments:
+
     instance_id     Instance ID of server to terminate
 
 Environment variables:
+
     HUB_APIKEY      Displayed in your Hub account's user profile
 """
 import os

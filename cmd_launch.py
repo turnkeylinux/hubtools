@@ -13,11 +13,13 @@
 Launch a new cloud server
 
 Arguments:
+
     appliance       Appliance name to launch (e.g. core)
     OR
     backup_id       Restore backup to a new cloud server (e.g. 2)
 
 Options:
+
     --region        Region for instance launch (default: us-east-1)
     --type          Instance size (default: m1.small)
     --root-pass     Root password to set (default: random)
@@ -29,6 +31,7 @@ Options:
     --app-domain    Domain for application
 
 Environment variables:
+
     HUB_APIKEY      Displayed in your Hub account's user profile
 """
 import re
