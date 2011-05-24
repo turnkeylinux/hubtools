@@ -30,6 +30,9 @@ Options:
     --app-email     Admin email address for application
     --app-domain    Domain for application
 
+    --fqdn          Fully qualified domain name to associate
+                    e.g., www.tklapp.com. | www.example.com.
+
 Environment variables:
 
     HUB_APIKEY      Displayed in your Hub account's user profile
@@ -60,7 +63,7 @@ def main():
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "h", 
             ["help", "region=", "type=", "label=", "root-pass=", "db-pass=",
-             "app-pass=", "app-email=", "app-domain="])
+             "app-pass=", "app-email=", "app-domain=", "fqdn="])
     except getopt.GetoptError, e:
         usage(e)
 
@@ -73,6 +76,7 @@ def main():
         'app_pass': "",
         'app_email': "",
         'app_domain': "",
+        'fqdn': "",
     }
     for opt, val in opts:
         if opt in ('-h', '--help'):

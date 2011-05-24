@@ -67,13 +67,16 @@ class Servers(object):
             region      - region for instance launch (e.g., us-east-1)
             type        - instance size (e.g., m1.small)
 
-        kwargs (optional depending on appliance):
+        kwargs (optional, * is required depending on appliance):
 
             root_pass   - root password to set (random if not specified)
-            db_pass     - database password
-            app_pass    - admin password for application
-            app_email   - admin email for application
-            app_domain  - domain for application
+            db_pass*    - database password
+            app_pass*   - admin password for application
+            app_email*  - admin email for application
+            app_domain* - domain for application
+
+            fqdn        - fully qualified domain name to associate
+                          e.g., www.tklapp.com. | www.example.com.
 
             backup_id   - automatically restore backup to new cloud server
                           note: backup key cannot be passphrase protected
