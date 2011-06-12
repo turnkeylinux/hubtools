@@ -43,6 +43,14 @@ class Server(AttrDict):
         r = self.hubobj.api('PUT', 'amazon/instance/%s/destroy/' % self.instanceid)
         self._parse_response(r)
 
+    def stop(self):
+        r = self.hubobj.api('PUT', 'amazon/instance/%s/stop/' % self.instanceid)
+        self._parse_response(r)
+
+    def start(self):
+        r = self.hubobj.api('PUT', 'amazon/instance/%s/start/' % self.instanceid)
+        self._parse_response(r)
+
     def unregister(self):
         self.hubobj.api('DELETE', 'amazon/instance/%s/unregister/' % self.instanceid)
   
