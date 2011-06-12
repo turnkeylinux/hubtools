@@ -20,7 +20,8 @@ By default uses a built-in format, unless a user-specified format is specified.
 Format variables:
 
     %instanceid         Instance ID
-    %type               Instance size
+    %size               Instance size
+    %type               Instance type
     %region             Instance region
     %label              Descriptive label
     %name               Appliance code name

@@ -21,13 +21,14 @@ class Server(AttrDict):
     def _parse_response(self, response):
         self.raw = response
         self.instanceid = response['instanceid']
-        self.type = response['type']
+        self.size = response['type']
         self.region = response['region']
         self.ipaddress = response['ipaddress']
         self.status = response['status']
         self.boot_status = response['server']['boot_status']
         self.name = response['server']['name']
         self.label = response['server']['description']
+        self.type = 'ebs' if response['ebs_backed'] else 's3'
 
     def update(self):
         attrs = {'refresh_cache': True}
@@ -58,14 +59,16 @@ class Servers(object):
 
         return map(lambda server: Server(self.hubobj, server), r)
 
-    def launch(self, name, region="us-east-1", type="m1.small", label="", **kwargs):
+    def launch(self, name, region="us-east-1", size="m1.small", type="s3",
+               label="", **kwargs):
         """Launch a new cloud server
 
         args:
 
             name        - appliance name (e.g., core)
             region      - region for instance launch (e.g., us-east-1)
-            type        - instance size (e.g., m1.small)
+            size        - instance size (e.g., m1.small)
+            type        - instance type (e.g., s3 or ebs)
 
         kwargs (optional, * is required depending on appliance):
 
@@ -81,7 +84,7 @@ class Servers(object):
             backup_id   - automatically restore backup to new cloud server
                           note: backup key cannot be passphrase protected
         """
-        attrs = {'region': region, 'type': type, 'label': label}
+        attrs = {'region': region, 'size': size ,'type': type, 'label': label}
         attrs.update(kwargs)
         r = self.hubobj.api('POST', 'amazon/launch/%s/' % name, attrs)
 

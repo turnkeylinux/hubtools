@@ -21,10 +21,11 @@ Arguments:
 Options:
 
     --region        Region for instance launch (default: us-east-1)
-    --type          Instance size (default: m1.small)
-    --root-pass     Root password to set (default: random)
+    --size          Instance size (default: m1.small)
+    --type          Instance type <s3|ebs> (default: s3)
     --label         Optional server descriptive label
 
+    --root-pass     Root password to set (default: random)
     --db-pass       Database password
     --app-pass      Admin password for application
     --app-email     Admin email address for application
@@ -62,14 +63,15 @@ def usage(e=None):
 def main():
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "h", 
-            ["help", "region=", "type=", "label=", "root-pass=", "db-pass=",
-             "app-pass=", "app-email=", "app-domain=", "fqdn="])
+            ["help", "region=", "size=", "type=", "label=", "root-pass=",
+             "db-pass=", "app-pass=", "app-email=", "app-domain=", "fqdn="])
     except getopt.GetoptError, e:
         usage(e)
 
     kwargs = {
         'region': "us-east-1",
-        'type': "m1.small",
+        'size': "m1.small",
+        'type': "s3",
         'label': "",
         'root_pass': "",
         'db_pass': "",
