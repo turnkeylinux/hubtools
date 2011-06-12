@@ -39,8 +39,8 @@ class Server(AttrDict):
         r = self.hubobj.api('PUT', 'amazon/instance/%s/reboot/' % self.instanceid)
         self._parse_response(r)
 
-    def terminate(self):
-        r = self.hubobj.api('PUT', 'amazon/instance/%s/terminate/' % self.instanceid)
+    def destroy(self):
+        r = self.hubobj.api('PUT', 'amazon/instance/%s/destroy/' % self.instanceid)
         self._parse_response(r)
 
     def unregister(self):

@@ -10,7 +10,7 @@
 # option) any later version.
 # 
 """
-Terminate a cloud server
+Destroy a cloud server
 
 Arguments:
 
@@ -63,7 +63,7 @@ def main():
 
     try:
         server = hub.servers.get(instance_id)[0]
-        server.terminate()
+        server.destroy()
     except HubAPIError, e:
         fatal(e.description)
 
