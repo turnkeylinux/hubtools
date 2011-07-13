@@ -61,13 +61,6 @@ def usage(e=None):
     sys.exit(1)
 
 def main():
-    try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], "h", 
-            ["help", "region=", "size=", "type=", "label=", "root-pass=",
-             "db-pass=", "app-pass=", "app-email=", "app-domain=", "fqdn="])
-    except getopt.GetoptError, e:
-        usage(e)
-
     kwargs = {
         'region': "us-east-1",
         'size': "m1.small",
@@ -80,6 +73,13 @@ def main():
         'app_domain': "",
         'fqdn': "",
     }
+    try:
+        opts, args = getopt.gnu_getopt(sys.argv[1:], "h", 
+                                       ["help" ] + 
+                                       [  key.replace("_", "-") + "=" for key in kwargs.keys() ])
+    except getopt.GetoptError, e:
+        usage(e)
+
     for opt, val in opts:
         if opt in ('-h', '--help'):
             usage()
