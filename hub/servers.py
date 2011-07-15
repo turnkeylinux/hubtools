@@ -40,7 +40,7 @@ class Server(AttrDict):
         self._parse_response(r)
 
     def destroy(self):
-        r = self.hubobj.api('PUT', 'amazon/instance/%s/destroy/' % self.instanceid)
+        r = self.hubobj.api('PUT', 'amazon/instance/%s/terminate/' % self.instanceid)
         self._parse_response(r)
 
     def stop(self):
