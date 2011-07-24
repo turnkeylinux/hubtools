@@ -89,7 +89,7 @@ def main():
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "h", 
                                        ["help" ] + 
-                                       [  key.replace("_", "-") + "=" for key in kwargs.keys() ])
+                                       [  key.replace("_", "-") + "=" for key in kwargs ])
     except getopt.GetoptError, e:
         usage(e)
 
@@ -97,7 +97,7 @@ def main():
         if opt in ('-h', '--help'):
             usage()
 
-        for kwarg in kwargs.keys():
+        for kwarg in kwargs:
             if opt == '--' + kwarg.replace('_', '-'):
                 kwargs[kwarg] = val
                 break
