@@ -105,7 +105,7 @@ def main():
     if len(args) != 1:
         usage("incorrect number of arguments")
 
-    apikey = os.getenv('HUB_APIKEY', None)
+    apikey = os.environ.get('HUB_APIKEY')
     if not apikey:
         fatal("HUB_APIKEY not specified in environment")
 
