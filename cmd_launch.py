@@ -21,7 +21,20 @@ Arguments:
 Options:
 
     --region        Region for instance launch (default: us-east-1)
+                    Regions:
+
+                      us-east-1 (Virginia, USA)
+                      us-west-1 (California, USA)
+                      eu-west-1 (Ireland, Europe)
+                      ap-southeast-1 (Singapore, Asia)
+
     --size          Instance size (default: m1.small)
+                    Sizes:
+
+                      t1.micro (1 CPU core, 613M RAM, no tmp storage)
+                      m1.small (1 CPU core, 1.7G RAM, 160G tmp storage)
+                      c1.medium (2 CPU cores, 1.7G RAM, 350G tmp storage)
+
     --type          Instance type <s3|ebs> (default: s3)
     --label         Optional server descriptive label
 
