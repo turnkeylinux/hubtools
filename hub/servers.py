@@ -73,7 +73,12 @@ class Servers(object):
 
         args:
 
-            name        - appliance name (e.g., core)
+            name        - appliance|backup_id
+
+                          appliance: appliance name to launch (e.g. core)
+                          backup_id: restore backup to a new cloud server (e.g. 2)
+                                     backup key cannot be passphrase protected
+
             region      - region for instance launch (e.g., us-east-1)
             size        - instance size (e.g., m1.small)
             type        - instance type (e.g., s3 or ebs)
@@ -89,8 +94,6 @@ class Servers(object):
             fqdn        - fully qualified domain name to associate
                           e.g., www.tklapp.com. | www.example.com.
 
-            backup_id   - automatically restore backup to new cloud server
-                          note: backup key cannot be passphrase protected
         """
         attrs = {'region': region, 'size': size ,'type': type, 'label': label}
         attrs.update(kwargs)
