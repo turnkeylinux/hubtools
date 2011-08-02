@@ -14,11 +14,15 @@ Destroy a cloud server
 
 Arguments:
 
-    instance_id     Instance ID of server to terminate
+    instance_id        Instance ID of server to destroy
+
+Options:
+
+    --auto-unregister  Automatically unregister server from Hub once destroyed
 
 Environment variables:
 
-    HUB_APIKEY      Displayed in your Hub account's user profile
+    HUB_APIKEY         Displayed in your Hub account's user profile
 """
 import os
 import sys
@@ -36,20 +40,24 @@ def usage(e=None):
     if e:
         print >> sys.stderr, "error: " + str(e)
 
-    print >> sys.stderr, "Syntax: %s <instance_id>" % (sys.argv[0])
+    print >> sys.stderr, "Syntax: %s <instance_id> [opts]" % (sys.argv[0])
     print >> sys.stderr, __doc__
 
     sys.exit(1)
 
 def main():
     try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], "h", ["help"])
+        opts, args = getopt.gnu_getopt(sys.argv[1:], "h", ["help", "auto-unregister"])
     except getopt.GetoptError, e:
         usage(e)
 
+    auto_unregister = False
     for opt, val in opts:
         if opt in ('-h', '--help'):
             usage()
+
+        if opt == "--auto-unregister":
+            auto_unregister = True
 
     if len(args) != 1:
         usage("incorrect number of arguments")
@@ -63,7 +71,7 @@ def main():
 
     try:
         server = hub.servers.get(instance_id)[0]
-        server.destroy()
+        server.destroy(auto_unregister=auto_unregister)
     except HubAPIError, e:
         fatal(e.description)
 
