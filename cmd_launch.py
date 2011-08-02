@@ -109,20 +109,11 @@ def main():
     if not apikey:
         fatal("HUB_APIKEY not specified in environment")
 
+    name = args[0]
     hub = Hub(apikey)
 
     try:
-        kwargs['backup_id'] = int(args[0])
-        record = hub.backups.get(kwargs['backup_id'])[0]
-        m = re.match(r'turnkey-(.*?)-(\d.*|beta.*)', record.turnkey_version)
-        appliance_name = m.groups()[0]
-    except ValueError:
-        appliance_name = args[0]
-    except HubAPIError, e:
-        fatal(e.description)
-
-    try:
-        server = hub.servers.launch(appliance_name, **kwargs)
+        server = hub.servers.launch(name, **kwargs)
     except HubAPIError, e:
         if e.name == "Request.MissingArgument":
             arg = e.description.split()[-1]
