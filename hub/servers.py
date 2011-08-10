@@ -39,7 +39,8 @@ class Server(AttrDict):
         r = self.hubobj.api('PUT', 'amazon/instance/%s/reboot/' % self.instanceid)
         self._parse_response(r)
 
-    def destroy(self, auto_unregister=False):
+    def destroy(self, auto_unregister=True):
+        """Destroy cloud server and unregister from Hub by default"""
         r = self.hubobj.api('PUT', 
                             'amazon/instance/%s/terminate/' % self.instanceid,
                             {'auto_unregister': auto_unregister})

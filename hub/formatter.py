@@ -57,7 +57,7 @@ def fmt_backup(backup):
 
 # server formatters
 def fmt_server_header():
-    return "# Status          ID         IP Address      Region          Label"
+    return "# Status          ID          IP Address      Region          Label"
 
 def fmt_server(server):
     return "  %-14s  %-9s  %-14s  %-14s  %s" % \
