@@ -56,9 +56,11 @@ class Server(AttrDict):
     def unregister(self):
         self.hubobj.api('DELETE', 'amazon/instance/%s/unregister/' % self.instanceid)
   
-    def status(self, boot_status):
+    def set_boot_status(self, boot_status):
         attrs = {'serverid': self.raw['server']['serverid']}
         self.hubobj.api('PUT', 'server/status/%s/' % boot_status, attrs)
+
+        self.boot_status = boot_status
 
 class Servers(object):
     def __init__(self, hubobj):
