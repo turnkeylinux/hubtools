@@ -7,6 +7,6 @@ Standards-Version: 3.6.1
 
 Package: hubtools
 Architecture: all
-Depends: python (>= 2.4), pycurl-wrapper (>= 1.0), python-crypto, python-simplejson, ca-certificates
+Depends: python (>= 2.4), turnkey-pylib (>= 3.0), pycurl-wrapper (>= 1.0), python-crypto, python-simplejson, ca-certificates
 Section: misc
 Description: HubTools - Python bindings and CLI for the TurnKey Hub API
