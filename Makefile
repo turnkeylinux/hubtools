@@ -6,7 +6,7 @@ prefix = /usr/local
 PATH_BIN = $(prefix)/bin
 PATH_INSTALL_LIB = $(prefix)/lib/$(progname)
 
-PATH_DIST := $(progname)-$$(autoversion HEAD)
+PATH_DIST := hubtools-$$(autoversion HEAD)
 
 all: help
 
