@@ -36,7 +36,7 @@ class Hub(object):
 class Spawner:
     """A high-level synchronous instance spawner that wraps around the Hub class"""
 
-    WAIT_FIRST = 15
+    WAIT_STATUS_FIRST = 15
     WAIT_STATUS = 10
     WAIT_RETRY = 5
 
@@ -50,10 +50,10 @@ class Spawner:
     class Stopped(Error):
         pass
 
-    def __init__(self, apikey, wait_first=WAIT_FIRST, wait_status=WAIT_STATUS, wait_retry=WAIT_RETRY, retries=RETRIES):
+    def __init__(self, apikey, wait_status_first=WAIT_STATUS_FIRST, wait_status=WAIT_STATUS, wait_retry=WAIT_RETRY, retries=RETRIES):
 
         self.apikey = apikey
-        self.wait_first = wait_first
+        self.wait_status_first = wait_status_first
         self.wait_status = wait_status
         self.wait_retry = wait_retry
         self.retries = retries
@@ -85,7 +85,8 @@ class Spawner:
         pending_ids = set()
         yielded_ids = set()
 
-        time_started = time.time()
+        time_start = time.time()
+        wait_status = self.wait_status_first
 
         def get_pending_servers():
             return [ server 
@@ -122,20 +123,21 @@ class Spawner:
                 server = retry(hub.servers.launch, name, **kwargs)
                 pending_ids.add(server.instanceid)
 
-            if time.time() - time_started < self.wait_first:
-                continue
+            if (time.time() - time_start) >= wait_status:
+                for server in get_pending_servers():
+                    if server.status != 'running' or server.boot_status != 'booted':
+                        continue
 
-            for server in get_pending_servers():
-                if server.status != 'running' or server.boot_status != 'booted':
-                    continue
+                    yielded_ids.add(server.instanceid)
+                    yield server.ipaddress
 
-                yielded_ids.add(server.instanceid)
-                yield server.ipaddress
+                if len(yielded_ids) == howmany:
+                    break
 
-            if len(yielded_ids) == howmany:
-                break
+                wait_status = self.wait_status
+                time_start = time.time()
 
-            time.sleep(self.wait_status)
+            time.sleep(0.1)
 
     def destroy(self, *addresses):
         if not addresses:
