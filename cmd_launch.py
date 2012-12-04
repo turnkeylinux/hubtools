@@ -16,11 +16,11 @@ Arguments:
 
     appliance       Appliance name to launch (e.g. core)
     OR
-    backup_id       Restore backup to a new cloud server (e.g. 2)
-    OR
-    snapshot_id     Restore snapshot to a new cloud server (e.g., snap-453a051d)
+    snapshot-id     Restore snapshot to a new cloud server (e.g., snap-453a051d)
 
 Options:
+
+    --backup-id     TurnKey Backup ID to restore on launch
 
     --region        Region for instance launch (default: us-east-1)
                     Regions:
@@ -70,7 +70,7 @@ def usage(e=None):
     if e:
         print >> sys.stderr, "error: " + str(e)
 
-    print >> sys.stderr, "Syntax: %s <appliance|backup_id|snapshot_id> [opts]" % (sys.argv[0])
+    print >> sys.stderr, "Syntax: %s <appliance|snapshot-id> [opts]" % (sys.argv[0])
     print >> sys.stderr, __doc__
 
     sys.exit(1)
@@ -87,6 +87,8 @@ def main():
         'app_email': "",
         'app_domain': "",
         'fqdn': "",
+
+        'backup_id': None,
     }
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "h", 

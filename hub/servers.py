@@ -82,7 +82,7 @@ class Servers(object):
 
         args:
 
-            name        - appliance|backup_id|snapshot_id
+            name        - appliance-codename|snapshot_id
 
                           appliance: appliance name to launch (e.g. core)
                           backup_id: restore backup to a new cloud server (e.g. 2)
@@ -94,6 +94,7 @@ class Servers(object):
 
         kwargs (optional, * is required depending on appliance):
 
+            backup_id   - restore this backup-id at launch
             root_pass   - root password to set (random if not specified)
             db_pass*    - database password
             app_pass*   - admin password for application
@@ -109,4 +110,3 @@ class Servers(object):
         r = self.hubobj.api('POST', 'amazon/launch/%s/' % name, attrs)
 
         return Server(self.hubobj, r)
-
