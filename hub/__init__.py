@@ -123,10 +123,10 @@ class Spawner:
                        (time.time() - stopped > self.PENDING_TIMEOUT):
                         raise self.Error("stuck pending instance")
 
-                if pending_ids:
-                    time.sleep(self.wait_status)
-                else:
+                if not pending_ids or not servers:
                     raise self.Stopped
+                else:
+                    time.sleep(self.wait_status)
 
                 continue
 
