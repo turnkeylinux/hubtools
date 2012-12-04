@@ -17,6 +17,8 @@ Arguments:
     appliance       Appliance name to launch (e.g. core)
     OR
     backup_id       Restore backup to a new cloud server (e.g. 2)
+    OR
+    snapshot_id     Restore snapshot to a new cloud server (e.g., snap-453a051d)
 
 Options:
 
@@ -68,7 +70,7 @@ def usage(e=None):
     if e:
         print >> sys.stderr, "error: " + str(e)
 
-    print >> sys.stderr, "Syntax: %s <appliance|backup_id> [opts]" % (sys.argv[0])
+    print >> sys.stderr, "Syntax: %s <appliance|backup_id|snapshot_id> [opts]" % (sys.argv[0])
     print >> sys.stderr, __doc__
 
     sys.exit(1)

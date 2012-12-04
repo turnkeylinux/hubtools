@@ -82,7 +82,7 @@ class Servers(object):
 
         args:
 
-            name        - appliance|backup_id
+            name        - appliance|backup_id|snapshot_id
 
                           appliance: appliance name to launch (e.g. core)
                           backup_id: restore backup to a new cloud server (e.g. 2)
