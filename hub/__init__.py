@@ -88,6 +88,9 @@ class Spawner:
         wait_status = self.wait_status_first
 
         def get_pending_servers():
+            if not pending_ids:
+                return []
+
             return [ server 
                      for server in retry(hub.servers.get, refresh_cache=True)
                      if server.instanceid in (pending_ids - yielded_ids) ]
@@ -102,12 +105,10 @@ class Spawner:
             if callback and not stopped:
                 if callback() is False:
                     stopped = time.time()
-                    log("stopping launch")
+                    log("launch stopped, destroying pending instances...")
 
             if stopped:
                 servers = [ server for server in get_pending_servers() ]
-                if not servers:
-                    raise self.Stopped
 
                 for server in servers:
                     if server.status == 'running':
@@ -119,7 +120,11 @@ class Spawner:
                        (time.time() - stopped > self.PENDING_TIMEOUT):
                         raise self.Error("stuck pending instance")
 
-                time.sleep(self.wait_status)
+                if pending_ids:
+                    time.sleep(self.wait_status)
+                else:
+                    raise self.Stopped
+
                 continue
 
             if len(pending_ids) < howmany:
@@ -141,7 +146,7 @@ class Spawner:
                 wait_status = self.wait_status
                 time_start = time.time()
 
-            time.sleep(0.1)
+            time.sleep(0.2)
 
     def destroy(self, *addresses):
         """destroy addresses. An address can be an IP or an instance-id.
