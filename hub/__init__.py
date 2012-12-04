@@ -116,7 +116,10 @@ class Spawner:
                         pending_ids.remove(server.instanceid)
                         log("destroyed instance %s" % server.instanceid)
 
-                    if server.status == 'pending' and \
+                    elif server.status in ('stopped', 'terminated'):
+                        pending_ids.remove(server.instanceid)
+
+                    elif server.status == 'pending' and \
                        (time.time() - stopped > self.PENDING_TIMEOUT):
                         raise self.Error("stuck pending instance")
 
@@ -134,6 +137,10 @@ class Spawner:
 
             if (time.time() - time_start) >= wait_status:
                 for server in get_pending_servers():
+                    if server.status in ('stopped', 'terminated'):
+                        pending_ids.remove(server.instanceid)
+                        continue
+
                     if server.status != 'running' or server.boot_status != 'booted':
                         continue
 
