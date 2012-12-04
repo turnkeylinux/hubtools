@@ -133,10 +133,16 @@ class Spawner:
             if len(pending_ids) < howmany:
                 server = retry(hub.servers.launch, name, **kwargs)
                 pending_ids.add(server.instanceid)
-                log("booting instance %s..." % server.instanceid)
+                log("booting instance %s ..." % server.instanceid)
 
             if (time.time() - time_start) >= wait_status:
-                for server in get_pending_servers():
+                pending_servers = get_pending_servers()
+
+                missing_ids = pending_ids - yielded_ids - set([ server.instanceid for server in pending_servers ])
+                for missing_id in missing_ids:
+                    pending_ids.remove(missing_id)
+
+                for server in pending_servers:
                     if server.status in ('stopped', 'terminated'):
                         pending_ids.remove(server.instanceid)
                         continue
