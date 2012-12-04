@@ -73,9 +73,8 @@ class Spawner:
 
         raise self.Error(e)
 
-    def launch(self, name, howmany, callback=None, **kwargs):
-        """launch <howmany> workers, wait until booted and return their public IP addresses.
-
+    def launch(self, name, howmany, logfh=None, callback=None, **kwargs):
+        """launch <howmany> workers, wait until booted and yield (ipaddress, instanceid) tuples
         Invoke callback every frequently. If callback returns False, we terminate launching.
         """
 
@@ -92,6 +91,10 @@ class Spawner:
             return [ server 
                      for server in retry(hub.servers.get, refresh_cache=True)
                      if server.instanceid in (pending_ids - yielded_ids) ]
+        
+        def log(s):
+            if logfh:
+                logfh.write(s + "\n")
 
         stopped = None
         while True:
@@ -99,11 +102,10 @@ class Spawner:
             if callback and not stopped:
                 if callback() is False:
                     stopped = time.time()
+                    log("stopping launch")
 
             if stopped:
-
                 servers = [ server for server in get_pending_servers() ]
-
                 if not servers:
                     raise self.Stopped
 
@@ -111,6 +113,7 @@ class Spawner:
                     if server.status == 'running':
                         retry(server.destroy, auto_unregister=True)
                         pending_ids.remove(server.instanceid)
+                        log("destroyed instance %s" % server.instanceid)
 
                     if server.status == 'pending' and \
                        (time.time() - stopped > self.PENDING_TIMEOUT):
@@ -122,6 +125,7 @@ class Spawner:
             if len(pending_ids) < howmany:
                 server = retry(hub.servers.launch, name, **kwargs)
                 pending_ids.add(server.instanceid)
+                log("booting instance %s..." % server.instanceid)
 
             if (time.time() - time_start) >= wait_status:
                 for server in get_pending_servers():
@@ -129,7 +133,7 @@ class Spawner:
                         continue
 
                     yielded_ids.add(server.instanceid)
-                    yield server.ipaddress
+                    yield (server.ipaddress, server.instanceid)
 
                 if len(yielded_ids) == howmany:
                     break
@@ -140,6 +144,8 @@ class Spawner:
             time.sleep(0.1)
 
     def destroy(self, *addresses):
+        """destroy addresses. An address can be an IP or an instance-id.
+        Return a list of destroyed (ipaddress, instanceid) tuples"""
         if not addresses:
             return
 
@@ -148,9 +154,9 @@ class Spawner:
 
         destroyable = [ server
                         for server in retry(hub.servers.get, refresh_cache=True)
-                        if server.ipaddress in addresses ]
+                        if (server.ipaddress in addresses) or (server.instanceid in addresses) ]
 
         for server in destroyable:
             retry(server.destroy, auto_unregister=True)
 
-        return [ server.ipaddress for server in destroyable ]
+        return [ (server.ipaddress, server.instanceid) for server in destroyable ]
