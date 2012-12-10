@@ -36,7 +36,7 @@ class Hub(object):
 class Spawner:
     """A high-level synchronous instance spawner that wraps around the Hub class"""
 
-    WAIT_STATUS_FIRST = 15
+    WAIT_STATUS_FIRST = 25
     WAIT_STATUS = 10
     WAIT_RETRY = 5
 
@@ -100,6 +100,10 @@ class Spawner:
                 logfh.write(s + "\n")
 
         stopped = None
+
+        launch_failure = None
+        launch_failure_pending = None
+
         while True:
 
             if callback and not stopped:
@@ -130,10 +134,23 @@ class Spawner:
 
                 continue
 
-            if len(pending_ids) < howmany:
-                server = retry(hub.servers.launch, name, **kwargs)
-                pending_ids.add(server.instanceid)
-                log("booting instance %s ..." % server.instanceid)
+            if len(pending_ids) < howmany and not launch_failure:
+                try:
+                    server = retry(hub.servers.launch, name, **kwargs)
+                    pending_ids.add(server.instanceid)
+                    log("booting instance %s ..." % server.instanceid)
+                except Exception, e:
+
+                    if pending_ids:
+                        log("failed to launch instance, waiting for %d pending instances" % len(pending_ids))
+                    else:
+                        log("failed to launch instance")
+
+                    launch_failure = e
+                    launch_failure_pending = len(pending_ids)
+
+            if launch_failure and len(yielded_ids) == launch_failure_pending:
+                raise launch_failure
 
             if (time.time() - time_start) >= wait_status:
                 pending_servers = get_pending_servers()
