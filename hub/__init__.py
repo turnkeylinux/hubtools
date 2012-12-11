@@ -23,10 +23,9 @@ class Hub(object):
 
     """Top-level object to access the TurnKey Hub API"""
     API_URL = 'https://hub.turnkeylinux.org/api/'
-    API_HEADERS = {'Accept': 'application/json'}
 
     def __init__(self, apikey=None, timeout=None, verbose=False):
-        headers = self.API_HEADERS.copy()
+        headers = {}
         if apikey:
             headers['apikey'] = apikey
 
