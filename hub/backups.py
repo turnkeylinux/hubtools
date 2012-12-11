@@ -9,7 +9,7 @@
 # option) any later version.
 # 
 import keypacket
-from utils import AttrDict
+from attrdict import AttrDict
 
 from datetime import datetime
 
