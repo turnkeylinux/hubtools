@@ -59,7 +59,6 @@ import sys
 import getopt
 
 from hub import Hub
-from hub.utils import HubAPIError
 from hub.formatter import fmt_server_header, fmt_server
 
 def fatal(e):
@@ -118,7 +117,7 @@ def main():
 
     try:
         server = hub.servers.launch(name, **kwargs)
-    except HubAPIError, e:
+    except hub.Error, e:
         if e.name == "Request.MissingArgument":
             arg = e.description.split()[-1]
             fatal("Required argument: --" + arg.replace('_', '-'))

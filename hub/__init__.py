@@ -16,56 +16,27 @@ from backups import Backups
 import time
 
 import simplejson as json
-from pycurl_wrapper import Curl
-
-class HubAPIError(Exception):
-    def __init__(self, code, name, description):
-        Exception.__init__(self, code, name, description)
-        self.code = code
-        self.name = name
-        self.description = description
-
-    def __str__(self):
-        return "%s - %s (%s)" % (self.code, self.name, self.description)
-
-class API:
-    ALL_OK = 200
-    CREATED = 201
-    DELETED = 204
-
-    @classmethod
-    def request(cls, method, url, attrs={}, headers={}):
-        # workaround: http://redmine.lighttpd.net/issues/1017
-        if method == "PUT":
-            headers['Expect'] = ''
-
-        c = Curl(url, headers)
-        func = getattr(c, method.lower())
-        func(attrs)
-
-        if not c.response_code in (cls.ALL_OK, cls.CREATED, cls.DELETED):
-            name, description = c.response_data.split(":", 1)
-            raise HubAPIError(c.response_code, name, description)
-
-        return json.loads(c.response_data)
-
+from pycurl_wrapper import Client, API
 
 class Hub(object):
+    Error = API.Error
+
     """Top-level object to access the TurnKey Hub API"""
     API_URL = 'https://hub.turnkeylinux.org/api/'
     API_HEADERS = {'Accept': 'application/json'}
 
-    def __init__(self, apikey=None):
-        self.apikey = apikey
-        self.appliances = Appliances(self)
-        self.servers = Servers(self)
-        self.backups = Backups(self)
-
-    def api(self, method, uri, attrs={}):
+    def __init__(self, apikey=None, timeout=None, verbose=False):
         headers = self.API_HEADERS.copy()
-        if self.apikey:
-            headers['apikey'] = self.apikey
-        return API.request(method, self.API_URL + uri, attrs, headers)
+        if apikey:
+            headers['apikey'] = apikey
+
+        _api = API(timeout=timeout, verbose=verbose)
+        def api(method, uri, attrs={}):
+            return _api.request(method, self.API_URL + uri, attrs, headers)
+
+        self.appliances = Appliances(api)
+        self.servers = Servers(api)
+        self.backups = Backups(api)
 
 class Spawner:
     """A high-level synchronous instance spawner that wraps around the Hub class"""
@@ -74,7 +45,8 @@ class Spawner:
     WAIT_STATUS = 10
     WAIT_RETRY = 5
 
-    RETRIES = 2
+    API_RETRIES = 2
+    API_TIMEOUT = 30
 
     PENDING_TIMEOUT = 300
 
@@ -84,19 +56,21 @@ class Spawner:
     class Stopped(Error):
         pass
 
-    def __init__(self, apikey, wait_status_first=WAIT_STATUS_FIRST, wait_status=WAIT_STATUS, wait_retry=WAIT_RETRY, retries=RETRIES):
+    def __init__(self, apikey, wait_status_first=WAIT_STATUS_FIRST, wait_status=WAIT_STATUS, wait_retry=WAIT_RETRY, api_retries=API_RETRIES, api_timeout=API_TIMEOUT):
 
-        self.apikey = apikey
+        self.hub = Hub(apikey, timeout=api_timeout)
+
         self.wait_status_first = wait_status_first
         self.wait_status = wait_status
         self.wait_retry = wait_retry
-        self.retries = retries
+
+        self.api_retries = api_retries
 
     def _retry(self, callable, *args, **kwargs):
-        for i in range(self.retries + 1):
+        for i in range(self.api_retries + 1):
             try:
                 return callable(*args, **kwargs)
-            except HubAPIError, e:
+            except self.hub.Error, e:
                 if e.name == 'HubAccount.InvalidApiKey':
                     raise self.Error(e)
 
@@ -113,7 +87,6 @@ class Spawner:
         """
 
         retry = self._retry
-        hub = Hub(self.apikey)
 
         pending_ids = set()
         yielded_ids = set()
@@ -126,7 +99,7 @@ class Spawner:
                 return []
 
             return [ server 
-                     for server in retry(hub.servers.get, refresh_cache=True)
+                     for server in retry(self.hub.servers.get, refresh_cache=True)
                      if server.instanceid in (pending_ids - yielded_ids) ]
         
         def log(s):
@@ -170,7 +143,7 @@ class Spawner:
 
             if len(pending_ids) < howmany and not launch_failure:
                 try:
-                    server = retry(hub.servers.launch, name, **kwargs)
+                    server = retry(self.hub.servers.launch, name, **kwargs)
                     pending_ids.add(server.instanceid)
                     log("booting instance %s ..." % server.instanceid)
                 except Exception, e:
@@ -218,11 +191,10 @@ class Spawner:
         if not addresses:
             return
 
-        hub = Hub(self.apikey)
         retry = self._retry
 
         destroyable = [ server
-                        for server in retry(hub.servers.get, refresh_cache=True)
+                        for server in retry(self.hub.servers.get, refresh_cache=True)
                         if (server.ipaddress in addresses) or (server.instanceid in addresses) ]
 
         for server in destroyable:

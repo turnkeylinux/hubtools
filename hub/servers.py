@@ -14,9 +14,10 @@ class Server(AttrDict):
     def __repr__(self):
         return "<Server: %s (%s, %s)>" % (self.name, self.instanceid, self.status)
 
-    def __init__(self, hubobj, response):
-        self.hubobj = hubobj
+    def __init__(self, api, response):
+        self.api = api
         self._parse_response(response)
+        AttrDict.__init__(self)
 
     def _parse_response(self, response):
         self.raw = response
@@ -32,49 +33,49 @@ class Server(AttrDict):
 
     def update(self):
         attrs = {'refresh_cache': True}
-        r = self.hubobj.api('GET', 'amazon/instance/%s/' % self.instanceid, attrs)
+        r = self.api('GET', 'amazon/instance/%s/' % self.instanceid, attrs)
         self._parse_response(r[0])
 
     def reboot(self):
-        r = self.hubobj.api('PUT', 'amazon/instance/%s/reboot/' % self.instanceid)
+        r = self.api('PUT', 'amazon/instance/%s/reboot/' % self.instanceid)
         self._parse_response(r)
 
     def destroy(self, auto_unregister=True):
         """Destroy cloud server and unregister from Hub by default"""
-        r = self.hubobj.api('PUT', 
+        r = self.api('PUT', 
                             'amazon/instance/%s/terminate/' % self.instanceid,
                             {'auto_unregister': auto_unregister})
         self._parse_response(r)
 
     def stop(self):
-        r = self.hubobj.api('PUT', 'amazon/instance/%s/stop/' % self.instanceid)
+        r = self.api('PUT', 'amazon/instance/%s/stop/' % self.instanceid)
         self._parse_response(r)
 
     def start(self):
-        r = self.hubobj.api('PUT', 'amazon/instance/%s/start/' % self.instanceid)
+        r = self.api('PUT', 'amazon/instance/%s/start/' % self.instanceid)
         self._parse_response(r)
 
     def unregister(self):
-        self.hubobj.api('DELETE', 'amazon/instance/%s/unregister/' % self.instanceid)
+        self.api('DELETE', 'amazon/instance/%s/unregister/' % self.instanceid)
   
     def set_boot_status(self, boot_status):
         attrs = {'serverid': self.raw['server']['serverid']}
-        self.hubobj.api('PUT', 'server/status/%s/' % boot_status, attrs)
+        self.api('PUT', 'server/status/%s/' % boot_status, attrs)
 
         self.boot_status = boot_status
 
 class Servers(object):
-    def __init__(self, hubobj):
-        self.hubobj = hubobj
+    def __init__(self, api):
+        self.api = api
 
     def get(self, instanceid=None, refresh_cache=False):
         attrs = {'refresh_cache': refresh_cache}
         if instanceid:
-            r = self.hubobj.api('GET', 'amazon/instance/%s/' % instanceid, attrs)
+            r = self.api('GET', 'amazon/instance/%s/' % instanceid, attrs)
         else:
-            r = self.hubobj.api('GET', 'amazon/instances/', attrs)
+            r = self.api('GET', 'amazon/instances/', attrs)
 
-        return map(lambda server: Server(self.hubobj, server), r)
+        return [ Server(self.api, server) for server in r ]
 
     def launch(self, name, region="us-east-1", size="m1.small", type="s3",
                label="", **kwargs):
@@ -107,6 +108,6 @@ class Servers(object):
         """
         attrs = {'region': region, 'size': size ,'type': type, 'label': label}
         attrs.update(kwargs)
-        r = self.hubobj.api('POST', 'amazon/launch/%s/' % name, attrs)
+        r = self.api('POST', 'amazon/launch/%s/' % name, attrs)
 
-        return Server(self.hubobj, r)
+        return Server(self.api, r)

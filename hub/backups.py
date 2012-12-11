@@ -17,9 +17,21 @@ class BackupRecord(AttrDict):
     def __repr__(self):
         return "<BackupRecord: %s>" % self.backup_id
 
-    def __init__(self, hubobj, response):
-        self.hubobj = hubobj
-        self._parse_response(response)
+    def __init__(self, response):
+        self.raw = response
+        self.address = response['address']
+        self.backup_id = response['backup_id']
+        self.server_id = response['server_id']
+        self.turnkey_version = response['turnkey_version']
+        self.skpp = self._key_has_passphrase(response['key'])
+
+        self.created = self._parse_datetime(response['date_created'])
+        self.updated = self._parse_datetime(response['date_updated'])
+
+        self.size = int(response['size']) # in MBs
+        self.label = response['description']
+
+        AttrDict.__init__(self)
 
     @staticmethod
     def _key_has_passphrase(key):
@@ -36,29 +48,15 @@ class BackupRecord(AttrDict):
 
         return datetime.strptime(s, "%Y-%m-%d %H:%M:%S")
 
-    def _parse_response(self, response):
-        self.raw = response
-        self.address = response['address']
-        self.backup_id = response['backup_id']
-        self.server_id = response['server_id']
-        self.turnkey_version = response['turnkey_version']
-        self.skpp = self._key_has_passphrase(response['key'])
-
-        self.created = self._parse_datetime(response['date_created'])
-        self.updated = self._parse_datetime(response['date_updated'])
-
-        self.size = int(response['size']) # in MBs
-        self.label = response['description']
-
 class Backups(object):
-    def __init__(self, hubobj):
-        self.hubobj = hubobj
+    def __init__(self, api):
+        self.api = api
 
     def get(self, backup_id=None):
         if backup_id:
-            r = self.hubobj.api('GET', 'backup/record/%s/' % backup_id)
-            return [ BackupRecord(self.hubobj, r) ]
+            r = self.api('GET', 'backup/record/%s/' % backup_id)
+            return [ BackupRecord(r) ]
         else:
-            r = self.hubobj.api('GET', 'backup/records/')
-            return map(lambda backup: BackupRecord(self.hubobj, backup), r)
+            r = self.api('GET', 'backup/records/')
+            return [ BackupRecord(backup) for backup in r ]
 

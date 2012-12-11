@@ -25,7 +25,6 @@ import sys
 import getopt
 
 from hub import Hub
-from hub.utils import HubAPIError
 from hub.formatter import fmt_server_header, fmt_server
 
 def fatal(e):
@@ -64,7 +63,7 @@ def main():
     try:
         server = hub.servers.get(instance_id)[0]
         server.start()
-    except HubAPIError, e:
+    except hub.Error, e:
         fatal(e.description)
 
     print fmt_server_header()
