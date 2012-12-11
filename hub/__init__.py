@@ -45,7 +45,7 @@ class Spawner:
     WAIT_STATUS = 10
     WAIT_RETRY = 5
 
-    API_RETRIES = 2
+    API_RETRIES = 3
     API_TIMEOUT = 30
 
     PENDING_TIMEOUT = 300
