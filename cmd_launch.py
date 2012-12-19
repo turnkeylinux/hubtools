@@ -27,8 +27,11 @@ Options:
 
                       us-east-1 (Virginia, USA)
                       us-west-1 (California, USA)
+                      us-west-2 (Oregon, USA)
                       eu-west-1 (Ireland, Europe)
                       ap-southeast-1 (Singapore, Asia)
+                      ap-northeast-1 (Tokyo, North-East Asia)
+                      sa-east-1 (Sao Paulo, South America)
 
     --size          Instance size (default: m1.small)
                     Sizes:
