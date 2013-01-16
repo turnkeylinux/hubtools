@@ -6,7 +6,7 @@ Build-Depends: debhelper (>> 4.2.0), turnkey-pylib (>= 0.3)
 Standards-Version: 3.6.1
 
 Package: hubtools
-Architecture: all
+Architecture: any
 Depends: python (>= 2.4), turnkey-pylib (>= 0.3), pycurl-wrapper (>= 1.1), python-crypto, ca-certificates
 Section: misc
 Description: HubTools - Python bindings and CLI for the TurnKey Hub API
