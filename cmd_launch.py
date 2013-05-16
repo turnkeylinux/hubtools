@@ -38,9 +38,19 @@ Options:
     --size          Instance size (default: m1.small)
                     Sizes:
 
-                      t1.micro (1 CPU core, 613M RAM, no tmp storage)
-                      m1.small (1 CPU core, 1.7G RAM, 160G tmp storage)
-                      c1.medium (2 CPU cores, 1.7G RAM, 350G tmp storage)
+                      t1.micro
+                      m1.small
+                      m1.medium
+                      c1.medium
+                      m1.large
+                      m1.xlarge
+                      c1.xlarge
+                      m2.xlarge
+                      m2.2xlarge
+                      m2.4xlarge
+                      hi1.4xlarge
+
+    --arch          Instance architecture <i386|amd64> (default: i386)
 
     --type          Instance type <s3|ebs> (default: s3)
     --label         Optional server descriptive label
@@ -58,7 +68,6 @@ Environment variables:
 
     HUB_APIKEY      Displayed in your Hub account's user profile
 """
-import re
 import os
 import sys
 import getopt
@@ -84,6 +93,7 @@ def main():
         'region': "us-east-1",
         'size': "m1.small",
         'type': "s3",
+        'arch': "i386",
         'label': "",
         'root_pass': "",
         'db_pass': "",

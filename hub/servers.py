@@ -1,13 +1,13 @@
-# 
+#
 # Copyright (c) 2011 Alon Swartz <alon@turnkeylinux.org>
-# 
+#
 # This file is part of HubTools.
-# 
+#
 # HubTools is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
-# 
+#
 from attrdict import AttrDict
 
 class Server(AttrDict):
@@ -42,7 +42,7 @@ class Server(AttrDict):
 
     def destroy(self, auto_unregister=True):
         """Destroy cloud server and unregister from Hub by default"""
-        r = self.api('PUT', 
+        r = self.api('PUT',
                             'amazon/instance/%s/terminate/' % self.instanceid,
                             {'auto_unregister': auto_unregister})
         self._parse_response(r)
@@ -57,7 +57,7 @@ class Server(AttrDict):
 
     def unregister(self):
         self.api('DELETE', 'amazon/instance/%s/unregister/' % self.instanceid)
-  
+
     def set_boot_status(self, boot_status):
         attrs = {'serverid': self.raw['server']['serverid']}
         self.api('PUT', 'server/status/%s/' % boot_status, attrs)
@@ -78,7 +78,7 @@ class Servers(object):
         return [ Server(self.api, server) for server in r ]
 
     def launch(self, name, region="us-east-1", size="m1.small", type="s3",
-               label="", **kwargs):
+               arch="i386", label="", **kwargs):
         """Launch a new cloud server
 
         args:
@@ -92,6 +92,7 @@ class Servers(object):
             region      - region for instance launch (e.g., us-east-1)
             size        - instance size (e.g., m1.small)
             type        - instance type (e.g., s3 or ebs)
+            arch        - instance architecture (e.g., i386 or amd64)
 
         kwargs (optional, * is required depending on appliance):
 
@@ -106,8 +107,10 @@ class Servers(object):
                           e.g., www.tklapp.com. | www.example.com.
 
         """
-        attrs = {'region': region, 'size': size ,'type': type, 'label': label}
+        attrs = {'region': region, 'size': size ,'type': type, 'arch': arch,
+                 'label': label}
         attrs.update(kwargs)
         r = self.api('POST', 'amazon/launch/%s/' % name, attrs)
 
         return Server(self.api, r)
+
