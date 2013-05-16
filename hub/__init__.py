@@ -1,22 +1,21 @@
-# 
+#
 # Copyright (c) 2011 Alon Swartz <alon@turnkeylinux.org>
 # Copyright (c) 2012 Liraz Siri <liraz@turnkeylinux.org>
-# 
+#
 # This file is part of HubTools.
-# 
+#
 # HubTools is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
-# 
+#
 from appliances import Appliances
 from servers import Servers
 from backups import Backups
 
 import time
 
-import simplejson as json
-from pycurl_wrapper import Client, API
+from pycurl_wrapper import API
 
 class Hub(object):
     Error = API.Error
@@ -97,10 +96,10 @@ class Spawner:
             if not pending_ids:
                 return []
 
-            return [ server 
+            return [ server
                      for server in retry(self.hub.servers.get, refresh_cache=True)
                      if server.instanceid in (pending_ids - yielded_ids) ]
-        
+
         def log(s):
             if logfh:
                 logfh.write(s + "\n")
