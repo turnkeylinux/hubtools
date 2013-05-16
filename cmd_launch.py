@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 #
 # Copyright (c) 2011 Alon Swartz <alon@turnkeylinux.org>
-# 
+#
 # This file is part of HubTools.
-# 
+#
 # HubTools is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
-# 
+#
 """
 Launch a new cloud server
 
@@ -25,13 +25,15 @@ Options:
     --region        Region for instance launch (default: us-east-1)
                     Regions:
 
-                      us-east-1 (Virginia, USA)
-                      us-west-1 (California, USA)
-                      us-west-2 (Oregon, USA)
-                      eu-west-1 (Ireland, Europe)
-                      ap-southeast-1 (Singapore, Asia)
-                      ap-northeast-1 (Tokyo, North-East Asia)
-                      sa-east-1 (Sao Paulo, South America)
+                      us-east-1       Virginia (East USA)
+                      us-west-1       California (West USA)
+                      us-west-2       Oregon (West USA)
+                      sa-east-1       Sao Paulo (South America)
+                      eu-west-1       Ireland (West Europe)
+                      ap-northeast-1  Tokyo (North-East Asia)
+                      ap-southeast-1  Singapore (South-East Asia)
+                      ap-southeast-2  Sydney (Australia)
+
 
     --size          Instance size (default: m1.small)
                     Sizes:
@@ -93,8 +95,8 @@ def main():
         'backup_id': None,
     }
     try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], "h", 
-                                       ["help" ] + 
+        opts, args = getopt.gnu_getopt(sys.argv[1:], "h",
+                                       ["help" ] +
                                        [  key.replace("_", "-") + "=" for key in kwargs ])
     except getopt.GetoptError, e:
         usage(e)
@@ -126,7 +128,7 @@ def main():
             fatal("Required argument: --" + arg.replace('_', '-'))
         else:
             fatal(e.description)
-        
+
     print fmt_server_header()
     print fmt_server(server)
 
