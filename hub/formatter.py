@@ -1,13 +1,13 @@
-# 
+#
 # Copyright (c) 2011 Alon Swartz <alon@turnkeylinux.org>
-# 
+#
 # This file is part of HubTools.
-# 
+#
 # HubTools is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
-# 
+#
 import string
 
 # custom formatting
@@ -57,7 +57,7 @@ def fmt_backup(backup):
 
 # server formatters
 def fmt_server_header():
-    return "# Status          ID         IP Address       Region          Label"
+    return "# Status          ID          IP Address       Region          Label"
 
 def fmt_server(server):
     return "  %-14s  %-9s  %-15s  %-14s  %s" % \
