@@ -14,55 +14,26 @@ Launch a new cloud server
 
 Arguments:
 
-    appliance       Appliance name to launch (e.g. core)
-    OR
-    snapshot-id     Restore snapshot to a new cloud server (e.g., snap-453a051d)
+    appliance          Appliance name to launch (e.g. core)
 
 Options:
 
-    --backup-id     TurnKey Backup ID to restore on launch
+    --region=          Region for instance launch (default: us-east-1)
+    --size=            Instance size (default: m1.small)
+    --label=           Optional server descriptive label
 
-    --region        Region for instance launch (default: us-east-1)
-                    Regions:
+    --root-pass=       Root password to set (default: random)
+    --db-pass=         Database password
+    --app-pass=        Admin password for application
+    --app-email=       Admin email address for application
+    --app-domain=      Domain for application
 
-                      us-east-1       Virginia (East USA)
-                      us-west-1       California (West USA)
-                      us-west-2       Oregon (West USA)
-                      sa-east-1       Sao Paulo (South America)
-                      eu-west-1       Ireland (West Europe)
-                      ap-northeast-1  Tokyo (North-East Asia)
-                      ap-southeast-1  Singapore (South-East Asia)
-                      ap-southeast-2  Sydney (Australia)
+    --backup-id=       TurnKey Backup ID to restore on launch
+    --fqdn=            Fully qualified domain name to associate
+                       e.g., www.tklapp.com. | www.example.com.
 
-
-    --size          Instance size (default: m1.small)
-                    Sizes:
-
-                      t1.micro
-                      m1.small
-                      m1.medium
-                      c1.medium
-                      m1.large
-                      m1.xlarge
-                      c1.xlarge
-                      m2.xlarge
-                      m2.2xlarge
-                      m2.4xlarge
-                      hi1.4xlarge
-
-    --arch          Instance architecture <i386|amd64> (default: i386)
-
-    --type          Instance type <s3|ebs> (default: s3)
-    --label         Optional server descriptive label
-
-    --root-pass     Root password to set (default: random)
-    --db-pass       Database password
-    --app-pass      Admin password for application
-    --app-email     Admin email address for application
-    --app-domain    Domain for application
-
-    --fqdn          Fully qualified domain name to associate
-                    e.g., www.tklapp.com. | www.example.com.
+    --skip-secalerts   Skip firstboot security updates
+    --skip-secupdates  Skip security alerts and notifications setup
 
 Environment variables:
 
@@ -83,7 +54,7 @@ def usage(e=None):
     if e:
         print >> sys.stderr, "error: " + str(e)
 
-    print >> sys.stderr, "Syntax: %s <appliance|snapshot-id> [opts]" % (sys.argv[0])
+    print >> sys.stderr, "Syntax: %s <appliance> [opts]" % (sys.argv[0])
     print >> sys.stderr, __doc__
 
     sys.exit(1)
@@ -92,8 +63,6 @@ def main():
     kwargs = {
         'region': "us-east-1",
         'size': "m1.small",
-        'type': "s3",
-        'arch': "i386",
         'label': "",
         'root_pass': "",
         'db_pass': "",
@@ -101,13 +70,15 @@ def main():
         'app_email': "",
         'app_domain': "",
         'fqdn': "",
-
-        'backup_id': None,
+        'backup_id': "",
+        'sec_alerts': "FORCE",
+        'sec_updates': "FORCE",
     }
     try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], "h",
-                                       ["help" ] +
-                                       [  key.replace("_", "-") + "=" for key in kwargs ])
+        s_opts = "h"
+        l_opts = [key.replace("_", "-") + "=" for key in kwargs ]
+        l_opts.extend(["help", "skip-secalerts", "skip-secupdates"])
+        opts, args = getopt.gnu_getopt(sys.argv[1:], s_opts, l_opts)
     except getopt.GetoptError, e:
         usage(e)
 
@@ -115,10 +86,19 @@ def main():
         if opt in ('-h', '--help'):
             usage()
 
+        if opt == '--skip-secalerts':
+            kwargs['sec_alerts'] = 'SKIP'
+            continue
+
+        if opt == '--skip-secupdates':
+            kwargs['sec_updates'] = 'SKIP'
+            continue
+
         for kwarg in kwargs:
             if opt == '--' + kwarg.replace('_', '-'):
                 kwargs[kwarg] = val
                 break
+
 
     if len(args) != 1:
         usage("incorrect number of arguments")
