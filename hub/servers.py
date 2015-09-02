@@ -77,18 +77,13 @@ class Servers(object):
 
         return [ Server(self.api, server) for server in r ]
 
-    def launch(self, name, region="us-east-1", size="m1.small", type="s3",
-               arch="i386", label="", **kwargs):
+    def launch(self, name, region="us-east-1", size="m1.small", type="ebs",
+               arch="amd64", label="", **kwargs):
         """Launch a new cloud server
 
         args:
 
-            name        - appliance-codename|snapshot_id
-
-                          appliance: appliance name to launch (e.g. core)
-                          backup_id: restore backup to a new cloud server (e.g. 2)
-                                     backup key cannot be passphrase protected
-
+            name        - appliance name to launch (e.g. core)
             region      - region for instance launch (e.g., us-east-1)
             size        - instance size (e.g., m1.small)
             type        - instance type (e.g., s3 or ebs)
@@ -97,6 +92,7 @@ class Servers(object):
         kwargs (optional, * is required depending on appliance):
 
             backup_id   - restore this backup-id at launch
+                          backup key cannot be passphrase protected
             root_pass   - root password to set (random if not specified)
             db_pass*    - database password
             app_pass*   - admin password for application
