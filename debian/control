@@ -16,5 +16,4 @@ Depends:
  python (>= 2.4),
  python-crypto,
  turnkey-pylib (>= 0.3),
-Section: misc
 Description: HubTools - Python bindings and CLI for the TurnKey Hub API
