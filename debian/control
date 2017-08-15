@@ -2,11 +2,20 @@ Source: hubtools
 Section: misc
 Priority: optional
 Maintainer: Alon Swartz <alon@turnkeylinux.org>
-Build-Depends: debhelper (>> 4.2.0), turnkey-pylib (>= 0.3)
-Standards-Version: 3.6.1
+Build-Depends:
+ debhelper (>= 10),
+ python-all (>= 2.6.6-3~),
+ turnkey-pylib (>= 0.3),
+Standards-Version: 4.0.0
+X-Python-Version: >= 2.6
 
 Package: hubtools
 Architecture: any
-Depends: python (>= 2.4), turnkey-pylib (>= 0.3), pycurl-wrapper (>= 1.1), python-crypto, ca-certificates
-Section: misc
+Depends:
+ ca-certificates,
+ ${misc:Depends},
+ pycurl-wrapper (>= 1.1),
+ ${python:Depends},
+ python-crypto,
+ turnkey-pylib (>= 0.3),
 Description: HubTools - Python bindings and CLI for the TurnKey Hub API
