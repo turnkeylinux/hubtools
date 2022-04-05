@@ -1,6 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 #
 # Copyright (c) 2011 Alon Swartz <alon@turnkeylinux.org>
+# Copyright (c) 2022 TUrnKey GNU/Linux <admin@turnkeylinux.org>
 # 
 # This file is part of HubTools.
 # 
@@ -33,8 +34,8 @@ import os
 import sys
 import getopt
 
-from hub import Hub
-from hub.formatter import Formatter, fmt_appliance_header, fmt_appliance
+from hublib import Hub
+from hublib.formatter import Formatter, fmt_appliance_header, fmt_appliance
 
 def fatal(e):
     print("error: " + str(e), file=sys.stderr)
@@ -87,4 +88,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
