@@ -37,22 +37,22 @@ from hub import Hub
 from hub.formatter import Formatter, fmt_appliance_header, fmt_appliance
 
 def fatal(e):
-    print >> sys.stderr, "error: " + str(e)
+    print("error: " + str(e), file=sys.stderr)
     sys.exit(1)
 
 def usage(e=None):
     if e:
-        print >> sys.stderr, "error: " + str(e)
+        print("error: " + str(e), file=sys.stderr)
 
-    print >> sys.stderr, "Syntax: %s" % (sys.argv[0])
-    print >> sys.stderr, __doc__
+    print("Syntax: %s" % (sys.argv[0]), file=sys.stderr)
+    print(__doc__, file=sys.stderr)
 
     sys.exit(1)
 
 def main():
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "h", ["help"])
-    except getopt.GetoptError, e:
+    except getopt.GetoptError as e:
         usage(e)
 
     refresh = False
@@ -79,11 +79,11 @@ def main():
     if format:
         format = Formatter(format)
         for appliance in appliances:
-            print format(appliance)
+            print(format(appliance))
     else:
-        print fmt_appliance_header()
+        print(fmt_appliance_header())
         for appliance in appliances:
-            print fmt_appliance(appliance)
+            print(fmt_appliance(appliance))
 
 if __name__ == "__main__":
     main()

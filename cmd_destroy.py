@@ -32,22 +32,22 @@ from hub import Hub
 from hub.formatter import fmt_server_header, fmt_server
 
 def fatal(e):
-    print >> sys.stderr, "error: " + str(e)
+    print("error: " + str(e), file=sys.stderr)
     sys.exit(1)
 
 def usage(e=None):
     if e:
-        print >> sys.stderr, "error: " + str(e)
+        print("error: " + str(e), file=sys.stderr)
 
-    print >> sys.stderr, "Syntax: %s <instance_id> [opts]" % (sys.argv[0])
-    print >> sys.stderr, __doc__
+    print("Syntax: %s <instance_id> [opts]" % (sys.argv[0]), file=sys.stderr)
+    print(__doc__, file=sys.stderr)
 
     sys.exit(1)
 
 def main():
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "h", ["help", "disable-unregister"])
-    except getopt.GetoptError, e:
+    except getopt.GetoptError as e:
         usage(e)
 
     auto_unregister = True
@@ -71,11 +71,11 @@ def main():
     try:
         server = hub.servers.get(instance_id)[0]
         server.destroy(auto_unregister=auto_unregister)
-    except hub.Error, e:
+    except hub.Error as e:
         fatal(e.description)
 
-    print fmt_server_header()
-    print fmt_server(server)
+    print(fmt_server_header())
+    print(fmt_server(server))
 
 if __name__ == "__main__":
     main()

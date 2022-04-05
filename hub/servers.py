@@ -8,7 +8,7 @@
 # Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
-from attrdict import AttrDict
+from .attrdict import AttrDict
 
 class Server(AttrDict):
     def __repr__(self):

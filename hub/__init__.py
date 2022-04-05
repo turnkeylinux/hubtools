@@ -9,9 +9,9 @@
 # Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 #
-from appliances import Appliances
-from servers import Servers
-from backups import Backups
+from .appliances import Appliances
+from .servers import Servers
+from .backups import Backups
 
 import time
 
@@ -68,7 +68,7 @@ class Spawner:
         for i in range(self.api_retries + 1):
             try:
                 return callable(*args, **kwargs)
-            except self.hub.Error, e:
+            except self.hub.Error as e:
                 if e.name == 'HubAccount.InvalidApiKey':
                     raise self.Error(e)
 
@@ -144,7 +144,7 @@ class Spawner:
                     server = retry(self.hub.servers.launch, name, **kwargs)
                     pending_ids.add(server.instanceid)
                     log("booting instance %s ..." % server.instanceid)
-                except Exception, e:
+                except Exception as e:
 
                     if pending_ids:
                         log("failed to launch instance, waiting for %d pending instances" % len(pending_ids))

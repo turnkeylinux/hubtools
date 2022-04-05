@@ -46,22 +46,22 @@ from hub import Hub
 from hub.formatter import Formatter, fmt_server_header, fmt_server
 
 def fatal(e):
-    print >> sys.stderr, "error: " + str(e)
+    print("error: " + str(e), file=sys.stderr)
     sys.exit(1)
 
 def usage(e=None):
     if e:
-        print >> sys.stderr, "error: " + str(e)
+        print("error: " + str(e), file=sys.stderr)
 
-    print >> sys.stderr, "Syntax: %s" % (sys.argv[0])
-    print >> sys.stderr, __doc__
+    print("Syntax: %s" % (sys.argv[0]), file=sys.stderr)
+    print(__doc__, file=sys.stderr)
 
     sys.exit(1)
 
 def main():
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "hr", ["help", "refresh"])
-    except getopt.GetoptError, e:
+    except getopt.GetoptError as e:
         usage(e)
 
     refresh = False
@@ -90,11 +90,11 @@ def main():
         if format:
             format = Formatter(format)
             for server in servers:
-                print format(server)
+                print(format(server))
         else:
-            print fmt_server_header()
+            print(fmt_server_header())
             for server in servers:
-                print fmt_server(server)
+                print(fmt_server(server))
 
 if __name__ == "__main__":
     main()

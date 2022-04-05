@@ -47,15 +47,15 @@ from hub import Hub
 from hub.formatter import fmt_server_header, fmt_server
 
 def fatal(e):
-    print >> sys.stderr, "error: " + str(e)
+    print("error: " + str(e), file=sys.stderr)
     sys.exit(1)
 
 def usage(e=None):
     if e:
-        print >> sys.stderr, "error: " + str(e)
+        print("error: " + str(e), file=sys.stderr)
 
-    print >> sys.stderr, "Syntax: %s <appliance> [opts]" % (sys.argv[0])
-    print >> sys.stderr, __doc__
+    print("Syntax: %s <appliance> [opts]" % (sys.argv[0]), file=sys.stderr)
+    print(__doc__, file=sys.stderr)
 
     sys.exit(1)
 
@@ -79,7 +79,7 @@ def main():
         l_opts = [key.replace("_", "-") + "=" for key in kwargs ]
         l_opts.extend(["help", "skip-secalerts", "skip-secupdates"])
         opts, args = getopt.gnu_getopt(sys.argv[1:], s_opts, l_opts)
-    except getopt.GetoptError, e:
+    except getopt.GetoptError as e:
         usage(e)
 
     for opt, val in opts:
@@ -112,15 +112,15 @@ def main():
 
     try:
         server = hub.servers.launch(name, **kwargs)
-    except hub.Error, e:
+    except hub.Error as e:
         if e.name == "Request.MissingArgument":
             arg = e.description.split()[-1]
             fatal("Required argument: --" + arg.replace('_', '-'))
         else:
             fatal(e.description)
 
-    print fmt_server_header()
-    print fmt_server(server)
+    print(fmt_server_header())
+    print(fmt_server(server))
 
 if __name__ == "__main__":
     main()
