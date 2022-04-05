@@ -46,10 +46,8 @@ import getopt
 
 from hublib import Hub
 from hublib.formatter import fmt_server_header, fmt_server
+from hublib.utils import fatal
 
-def fatal(e):
-    print("error: " + str(e), file=sys.stderr)
-    sys.exit(1)
 
 def usage(e=None):
     if e:
@@ -59,6 +57,7 @@ def usage(e=None):
     print(__doc__, file=sys.stderr)
 
     sys.exit(1)
+
 
 def main():
     kwargs = {
@@ -77,7 +76,7 @@ def main():
     }
     try:
         s_opts = "h"
-        l_opts = [key.replace("_", "-") + "=" for key in kwargs ]
+        l_opts = [key.replace("_", "-") + "=" for key in kwargs]
         l_opts.extend(["help", "skip-secalerts", "skip-secupdates"])
         opts, args = getopt.gnu_getopt(sys.argv[1:], s_opts, l_opts)
     except getopt.GetoptError as e:
@@ -100,7 +99,6 @@ def main():
                 kwargs[kwarg] = val
                 break
 
-
     if len(args) != 1:
         usage("incorrect number of arguments")
 
@@ -122,6 +120,7 @@ def main():
 
     print(fmt_server_header())
     print(fmt_server(server))
+
 
 if __name__ == "__main__":
     main()
