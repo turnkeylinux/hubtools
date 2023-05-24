@@ -13,7 +13,7 @@ import hashlib
 import base64
 import struct
 
-from Crypto.Cipher import AES
+from Cryptodome.Cipher import AES
 
 KEY_VERSION = 1
 
