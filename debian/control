@@ -6,8 +6,9 @@ Build-Depends:
  debhelper (>= 10),
  python3-all (>= 3.6~),
  python3-pycryptodome,
+ py3curl-wrapper,
 Standards-Version: 4.0.0
-X-Python-Version: >= 2.6
+X-Python-Version: >= 3.6
 
 Package: hubtools
 Architecture: any
