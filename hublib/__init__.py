@@ -15,7 +15,7 @@ from .backups import Backups
 
 import time
 
-from pycurl_wrapper import API
+from py3curl_wrapper import API
 
 class Hub(object):
     Error = API.Error
