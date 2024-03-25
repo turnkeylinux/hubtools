@@ -41,12 +41,12 @@ def _repeat(f, input, count):
     return input
 
 def _cipher_key(passphrase, repeats):
-    cipher_key = _repeat(lambda k: hashlib.sha256(k).digest(),
+    cipher_key = _repeat(lambda k: hashlib.sha256(k.encode()).digest(),
                          passphrase, repeats)
     return cipher_key
 
 def _cipher(cipher_key):
-    return AES.new(cipher_key, mode=AES.MODE_CBC, IV='\0' * 16)
+    return AES.new(cipher_key, mode=AES.MODE_CBC, IV=b'\0' * 16)
 
 def fmt(secret, passphrase):
     salt = os.urandom(SALT_LEN)
