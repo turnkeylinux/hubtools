@@ -1,16 +1,17 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 #
 # Copyright (c) 2011 Alon Swartz <alon@turnkeylinux.org>
-# 
+# Copyright (c) 2022 TUrnKey GNU/Linux <admin@turnkeylinux.org>
+#
 # This file is part of HubTools.
-# 
+#
 # HubTools is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
-# 
+#
 """
-Start a stopped EBS backed cloud server
+Stop an EBS backed cloud server
 
 Arguments:
 
@@ -24,26 +25,25 @@ import os
 import sys
 import getopt
 
-from hub import Hub
-from hub.formatter import fmt_server_header, fmt_server
+from hublib import Hub
+from hublib.formatter import fmt_server_header, fmt_server
+from hublib.utils import fatal
 
-def fatal(e):
-    print >> sys.stderr, "error: " + str(e)
-    sys.exit(1)
 
 def usage(e=None):
     if e:
-        print >> sys.stderr, "error: " + str(e)
+        print("error: " + str(e), file=sys.stderr)
 
-    print >> sys.stderr, "Syntax: %s <instance_id>" % (sys.argv[0])
-    print >> sys.stderr, __doc__
+    print("Syntax: %s <instance_id>" % (sys.argv[0]), file=sys.stderr)
+    print(__doc__, file=sys.stderr)
 
     sys.exit(1)
+
 
 def main():
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "h", ["help"])
-    except getopt.GetoptError, e:
+    except getopt.GetoptError as e:
         usage(e)
 
     for opt, val in opts:
@@ -62,13 +62,13 @@ def main():
 
     try:
         server = hub.servers.get(instance_id)[0]
-        server.start()
-    except hub.Error, e:
+        server.stop()
+    except hub.Error as e:
         fatal(e.description)
 
-    print fmt_server_header()
-    print fmt_server(server)
+    print(fmt_server_header())
+    print(fmt_server(server))
+
 
 if __name__ == "__main__":
     main()
-

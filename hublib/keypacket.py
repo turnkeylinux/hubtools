@@ -13,7 +13,7 @@ import hashlib
 import base64
 import struct
 
-from Crypto.Cipher import AES
+from Cryptodome.Cipher import AES
 
 KEY_VERSION = 1
 
@@ -36,17 +36,17 @@ def _unpad(padded):
     return padded[-(2 + len) :-2]
 
 def _repeat(f, input, count):
-    for x in xrange(count):
+    for x in range(count):
         input = f(input)
     return input
 
 def _cipher_key(passphrase, repeats):
-    cipher_key = _repeat(lambda k: hashlib.sha256(k).digest(),
+    cipher_key = _repeat(lambda k: hashlib.sha256(k.encode()).digest(),
                          passphrase, repeats)
     return cipher_key
 
 def _cipher(cipher_key):
-    return AES.new(cipher_key, mode=AES.MODE_CBC, IV='\0' * 16)
+    return AES.new(cipher_key, mode=AES.MODE_CBC, IV=b'\0' * 16)
 
 def fmt(secret, passphrase):
     salt = os.urandom(SALT_LEN)
@@ -74,7 +74,7 @@ def _parse(packet):
     try:
         packet = base64.b64decode(packet)
         version, khr, kcr = struct.unpack("!BHH", packet[:5])
-    except (TypeError, struct.error), e:
+    except (TypeError, struct.error) as e:
         raise Error("can't parse key packet: " + str(e))
 
     minimum_len = (5 + FINGERPRINT_LEN + 16)

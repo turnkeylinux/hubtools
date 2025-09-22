@@ -1,14 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 #
 # Copyright (c) 2011 Alon Swartz <alon@turnkeylinux.org>
-# 
+# Copyright (c) 2022 TUrnKey GNU/Linux <admin@turnkeylinux.org>
+#
 # This file is part of HubTools.
-# 
+#
 # HubTools is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
 # Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
-# 
+#
 """
 List appliances
 
@@ -33,26 +34,25 @@ import os
 import sys
 import getopt
 
-from hub import Hub
-from hub.formatter import Formatter, fmt_appliance_header, fmt_appliance
+from hublib import Hub
+from hublib.formatter import Formatter, fmt_appliance_header, fmt_appliance
+from hublib.utils import fatal
 
-def fatal(e):
-    print >> sys.stderr, "error: " + str(e)
-    sys.exit(1)
 
 def usage(e=None):
     if e:
-        print >> sys.stderr, "error: " + str(e)
+        print("error: " + str(e), file=sys.stderr)
 
-    print >> sys.stderr, "Syntax: %s" % (sys.argv[0])
-    print >> sys.stderr, __doc__
+    print("Syntax: %s" % (sys.argv[0]), file=sys.stderr)
+    print(__doc__, file=sys.stderr)
 
     sys.exit(1)
+
 
 def main():
     try:
         opts, args = getopt.gnu_getopt(sys.argv[1:], "h", ["help"])
-    except getopt.GetoptError, e:
+    except getopt.GetoptError as e:
         usage(e)
 
     refresh = False
@@ -79,12 +79,12 @@ def main():
     if format:
         format = Formatter(format)
         for appliance in appliances:
-            print format(appliance)
+            print(format(appliance))
     else:
-        print fmt_appliance_header()
+        print(fmt_appliance_header())
         for appliance in appliances:
-            print fmt_appliance(appliance)
+            print(fmt_appliance(appliance))
+
 
 if __name__ == "__main__":
     main()
-

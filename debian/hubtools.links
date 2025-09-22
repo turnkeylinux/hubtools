@@ -1,0 +1,7 @@
+usr/bin/hub_destroy.py          usr/bin/hub-destroy
+usr/bin/hub_launch.py           usr/bin/hub-launch
+usr/bin/hub_list_appliances.py  usr/bin/hub-list-appliances
+usr/bin/hub_list_backups.py     usr/bin/hub-list-backups
+usr/bin/hub_list_servers.py     usr/bin/hub-list-servers
+usr/bin/hub_start.py            usr/bin/hub-start
+usr/bin/hub_stop.py             usr/bin/hub-stop

@@ -8,8 +8,8 @@
 # Free Software Foundation; either version 3 of the License, or (at your
 # option) any later version.
 # 
-import keypacket
-from attrdict import AttrDict
+from . import keypacket
+from .attrdict import AttrDict
 
 from datetime import datetime
 
