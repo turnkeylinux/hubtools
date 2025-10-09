@@ -18,7 +18,7 @@ import time
 from py3curl_wrapper import API
 
 class Hub(object):
-    Error = API.Error
+    Error = API.ERROR
 
     """Top-level object to access the TurnKey Hub API"""
     API_URL = 'https://hub.turnkeylinux.org/api/'
