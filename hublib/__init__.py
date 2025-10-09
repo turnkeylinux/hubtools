@@ -65,15 +65,16 @@ class Spawner:
         self.api_retries = api_retries
 
     def _retry(self, callable, *args, **kwargs):
+        e = self.Error("Timed out")
         for i in range(self.api_retries + 1):
             try:
                 return callable(*args, **kwargs)
             except self.hub.Error as e:
                 if e.name == 'HubAccount.InvalidApiKey':
-                    raise self.Error(e)
+                    raise self.Error(e) from e
 
                 if e.name == 'BackupRecord.NotFound':
-                    raise self.Error(e)
+                    raise self.Error(e) from e
 
                 time.sleep(self.wait_retry)
 
