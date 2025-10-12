@@ -18,7 +18,7 @@ import time
 from py3curl_wrapper import API
 
 class Hub(object):
-    Error = API.Error
+    Error = API.ERROR
 
     """Top-level object to access the TurnKey Hub API"""
     API_URL = 'https://hub.turnkeylinux.org/api/'
@@ -70,14 +70,14 @@ class Spawner:
                 return callable(*args, **kwargs)
             except self.hub.Error as e:
                 if e.name == 'HubAccount.InvalidApiKey':
-                    raise self.Error(e)
+                    raise self.Error(e) from e
 
                 if e.name == 'BackupRecord.NotFound':
-                    raise self.Error(e)
+                    raise self.Error(e) from e
 
                 time.sleep(self.wait_retry)
 
-        raise self.Error(e)
+        raise self.Error("Timed out")
 
     def launch(self, name, howmany, logfh=None, callback=None, **kwargs):
         """launch <howmany> workers, wait until booted and yield (ipaddress, instanceid) tuples
