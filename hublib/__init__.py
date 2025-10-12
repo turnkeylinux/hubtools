@@ -65,7 +65,6 @@ class Spawner:
         self.api_retries = api_retries
 
     def _retry(self, callable, *args, **kwargs):
-        e = self.Error("Timed out")
         for i in range(self.api_retries + 1):
             try:
                 return callable(*args, **kwargs)
@@ -78,7 +77,7 @@ class Spawner:
 
                 time.sleep(self.wait_retry)
 
-        raise self.Error(e)
+        raise self.Error("Timed out")
 
     def launch(self, name, howmany, logfh=None, callback=None, **kwargs):
         """launch <howmany> workers, wait until booted and yield (ipaddress, instanceid) tuples
