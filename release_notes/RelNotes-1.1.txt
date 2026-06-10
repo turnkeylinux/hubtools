@@ -1,0 +1,18 @@
+v1.1.0 Release Notes
+====================
+
+Packaging and git repo updates. No functional changes. (Mostly from unversioned
+v18.x release).
+
+* Code maintenance:
+  - Python3 updates.
+  - Remove legacy travis config.
+  - Update gitignore to ignore common build & cached assests.
+  - Move executables to bin directory.
+  
+* Packaging updates:
+  - Leverage .links file to generate /usr/bin links to executables.
+  - Remove generic postinst & preinst files; modern debian-helper generates
+    required scripts.
+  - Set static datetime and exclude bytecode by default to make package leaner
+    and reproducable.
